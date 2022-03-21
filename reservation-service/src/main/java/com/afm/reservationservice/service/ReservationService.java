@@ -16,6 +16,7 @@ import java.util.List;
 public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final PassengerRepository passengerRepository;
+    private final GenerateNameService generateReservationtName;
 
     public Reservation createReservation(String flightName, String airPlaneName, String seatCord,
                                          String rateName, Passenger passenger, String userMail) {
@@ -27,6 +28,7 @@ public class ReservationService {
         reservation.setRate(rateName);
         reservation.setPassenger(passenger);
         reservation.setUserEmail(userMail);
+
         reservation.setName("ASD");
         reservation.setSeatCord(seatCord);
 
@@ -36,6 +38,9 @@ public class ReservationService {
         //reservation.setPrice( result);
         reservationRepository.save(reservation);
 
+        String ReservationName = generateReservationtName.generateReservationtName(reservation.getId());
+        reservation.setName(ReservationName);
+        reservationRepository.save(reservation);
 
         return reservation;
     }
