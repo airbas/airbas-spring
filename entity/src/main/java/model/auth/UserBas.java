@@ -1,9 +1,9 @@
 package model.auth;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
 
 import javax.persistence.*;
 import java.util.List;
@@ -29,7 +29,13 @@ public class UserBas {
             name = "userbas_authorities",
             joinColumns = {@JoinColumn(name = "userbas_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "authorities_id", referencedColumnName = "id")})
+
     private List<Authority> authorities;
+
+
+
+    //@ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    //Set<Authority> roles = new HashSet<>();
 
     /*@OneToOne(mappedBy = "userbas", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)

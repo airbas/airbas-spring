@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @RequiredArgsConstructor generates a constructor with 1 parameter for each field that requires special handling.
@@ -34,7 +35,6 @@ import java.util.List;
 public class AuthenticationService {
     private final UserBasRepository userBasRepository;
     private final AuthorityRepository authorityRepository;
-    private final SpringUserService springUserService;
     private final AuthenticationManager authenticationManager;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -88,17 +88,7 @@ public class AuthenticationService {
         List<Authority> authorities = Arrays.asList(new Authority[] {authorityUser});
 
         newUser.setAuthorities(authorities);
-
         newUser.setProvider(provider);
         userBasRepository.save(newUser);
     }
-
-
-
-
-
-
-
-
-
 }
