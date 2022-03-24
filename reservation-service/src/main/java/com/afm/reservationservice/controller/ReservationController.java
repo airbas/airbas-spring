@@ -38,6 +38,7 @@ public class ReservationController {
         return reservations;
     }
 
+    @CrossOrigin
     @GetMapping ("/get/{email}")
     public List<Reservation> getReservations(@PathVariable String email){
         return reservationService.getReservation(email);

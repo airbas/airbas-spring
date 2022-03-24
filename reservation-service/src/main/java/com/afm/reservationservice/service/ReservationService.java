@@ -28,8 +28,6 @@ public class ReservationService {
         reservation.setRate(rateName);
         reservation.setPassenger(passenger);
         reservation.setUserEmail(userMail);
-
-        reservation.setName("ASD");
         reservation.setSeatCord(seatCord);
 
         passengerRepository.save(passenger);

@@ -20,18 +20,21 @@ import java.util.List;
 public class FlightController {
     private final FlightsService flightService;
 
+    @CrossOrigin
     @PostMapping("flights/oneway")
     public ResponseEntity<?> findFlights(@RequestBody RequestFlight request)  {
         List<Flight> flightList = flightService.oneWayRest(request);
         return new ResponseEntity(flightList, HttpStatus.OK);
     }
 
+    @CrossOrigin
     @PostMapping("flights/fulltrip")
     public ResponseEntity<?> findFlightsWithReturn(@RequestBody RequestFlight request)  {
         List<List<Flight>> flightList = flightService.fullTripRest(request);
         return new ResponseEntity(flightList, HttpStatus.OK);
     }
 
+    @CrossOrigin
     @GetMapping("flights/cities")
     public ResponseEntity<?> getCity()  {
         return new ResponseEntity(null, HttpStatus.OK);

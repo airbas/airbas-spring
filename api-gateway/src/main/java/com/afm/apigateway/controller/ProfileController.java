@@ -14,14 +14,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/profile")
 @RequiredArgsConstructor
+@CrossOrigin
 public class ProfileController {
     private final ProfileService profileService;
 
+    @CrossOrigin
     @PostMapping("/register")
     public UserPayload signUp(@RequestBody UserPayload payload) {
         return profileService.saveDetails(payload);
     }
 
+    @CrossOrigin
     @GetMapping("/details/{email}")
     public ResponseEntity<?> details(@PathVariable String email)  {
         UserBasDetail detail = profileService.getDetailsByEmail(email);
@@ -37,6 +40,7 @@ public class ProfileController {
         return profileService.allDetails();
     }
 
+    @CrossOrigin
     @PostMapping("/update")
     public ResponseEntity<?> update(@RequestBody UserPayload payload)  {
         UserBasDetail updated = profileService.update(payload);

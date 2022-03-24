@@ -35,7 +35,7 @@ public class AuthController {
         userCreationSaga = new UserCreationOrchestrator(authService, profileService, jwtService);
 
     }
-
+        // sample
     @CrossOrigin
     @GetMapping("auth/users")
     public ResponseEntity<?> users(){
