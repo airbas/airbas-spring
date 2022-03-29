@@ -8,6 +8,8 @@ import model.utils.ReservationRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+
+import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,19 +23,20 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping("/creates")
-    public List<Reservation> createReservations(@RequestBody List<ReservationRequest> requests){
+    public List<Reservation> createReservations(@RequestBody List<ReservationRequest> requests) throws ParseException {
         List<Reservation> reservations = new LinkedList<>();
         logger.info("Creation Reservations" );
 
         for (ReservationRequest request : requests){
-            Passenger p = new Passenger();
+            reservations.add(reservationService.buildReservation(request));
+            /*Passenger p = new Passenger();
             p.setBirthdate(request.getPassengerDate());
             p.setFirstname(request.getPassangerName());
             p.setSecondname(request.getPassangerSurname());
             p.setTelephone(request.getPassangerPhone());
 
             reservations.add(reservationService.createReservation(request.getFlightName(), request.getAirPlaneName(),
-                    request.getSeatCord(), request.getRate(), p, request.getUsermail()));
+                    request.getSeatCord(), request.getRate(), p, request.getUsermail()));*/
         }
         return reservations;
     }

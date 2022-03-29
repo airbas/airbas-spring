@@ -6,9 +6,13 @@ import lombok.RequiredArgsConstructor;
 import model.flights.AirPlane;
 import model.prenotation.Passenger;
 import model.prenotation.Reservation;
+import model.utils.ReservationRequest;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Service
@@ -18,26 +22,33 @@ public class ReservationService {
     private final PassengerRepository passengerRepository;
     private final GenerateNameService generateReservationtName;
 
-    public Reservation createReservation(String flightName, String airPlaneName, String seatCord,
-                                         String rateName, Passenger passenger, String userMail) {
+
+    public Reservation buildReservation(ReservationRequest req) throws ParseException {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+
         Reservation reservation = new Reservation();
+
+        Passenger p = new Passenger();
+        p.setBirthdate(df.parse(req.getPassengerDate()));
+        p.setFirstname(req.getPassangerName());
+        p.setSecondname(req.getPassangerSurname());
+        p.setTelephone(req.getPassangerPhone());
         //Rate rate = rateRepository.findByType(rateName);
 
-        reservation.setAirPlaneName(airPlaneName);
-        reservation.setFlightName(flightName);
-        reservation.setRate(rateName);
-        reservation.setPassenger(passenger);
-        reservation.setUserEmail(userMail);
-        reservation.setSeatCord(seatCord);
+        reservation.setAirPlaneName(req.getAirPlaneName());
+        reservation.setFlightName(req.getFlightName());
+        reservation.setRate(req.getRate());
+        reservation.setUserEmail(req.getUsermail());
+        reservation.setSeatCord(req.getSeatCord());
+        reservation.setArrivalAirport(req.getArrivalAirport());
+        reservation.setDapartureAirport(req.getDapartureAirport());
+        reservation.setDate(df.parse(req.getDateFlight()));
 
-        passengerRepository.save(passenger);
-        reservation.setPassenger(passenger);
-        //BigDecimal result = flight.getPrice().add(rate.getPrice());
-        //reservation.setPrice( result);
+        passengerRepository.save(p);
+        reservation.setPassenger(p);
         reservationRepository.save(reservation);
 
-        String ReservationName = generateReservationtName.generateReservationtName(reservation.getId());
-        reservation.setName(ReservationName);
+        reservation.setName(generateReservationtName.generateReservationtName(reservation.getId()));
         reservationRepository.save(reservation);
 
         return reservation;

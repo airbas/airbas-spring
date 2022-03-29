@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -17,6 +18,11 @@ public class Reservation {
     private String flightName;
     private String seatCord;
     private String airPlaneName;
+
+    private String dapartureAirport;
+    private String arrivalAirport;
+    private Date date;
+
     //private BigDecimal price;
     //@OneToOne
     //private Rate rate;

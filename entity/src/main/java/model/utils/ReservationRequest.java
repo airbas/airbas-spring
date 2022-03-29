@@ -17,8 +17,11 @@ public class ReservationRequest {
     private String seatCord;
     private String rate;
     private String usermail;
+    private String dapartureAirport;
+    private String arrivalAirport;
+    private String dateFlight;
     private String passangerName;
     private String passangerSurname;
     private String passangerPhone;
-    private Date passengerDate;
+    private String passengerDate;
 }
