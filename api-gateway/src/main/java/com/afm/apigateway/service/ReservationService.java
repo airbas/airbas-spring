@@ -1,5 +1,6 @@
 package com.afm.apigateway.service;
 
+import model.flights.AirPlane;
 import model.flights.Flight;
 import model.prenotation.Reservation;
 import model.utils.RequestFlight;
@@ -39,4 +40,19 @@ public class ReservationService {
 
         return resList;
     }
+
+    public List<Reservation> getReservation(String mail) {
+
+        List<Reservation> resList = restTemplate.exchange(
+                resAddress + "/reservation/get/" + mail ,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Reservation>>() {
+                }
+        ).getBody();
+
+        return resList;
+    }
+
+
 }

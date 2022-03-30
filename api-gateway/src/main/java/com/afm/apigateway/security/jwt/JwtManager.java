@@ -45,37 +45,6 @@ public class JwtManager implements Serializable {
         return username;
     }
 
-    public JwtUser getUserDetails(String token) {
-        if(token == null){
-            return null;
-        }
-        try {
-            final Claims claims = getClaimsFromToken(token);
-            List<SimpleGrantedAuthority> authorities = null;
-            if (claims.get(CLAIM_KEY_AUTHORITIES) != null) {
-                authorities =
-                        ((List<String>) claims.get(CLAIM_KEY_AUTHORITIES))
-                                .stream()
-                                .map(role-> new SimpleGrantedAuthority(role))
-                                .collect(Collectors.toList());
-            }
-            return new JwtUser(claims.getSubject(), "", authorities);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public Date getExpirationDateFromToken(String token) {
-        Date expiration;
-        try {
-            final Claims claims = getClaimsFromToken(token);
-            expiration = claims.getExpiration();
-        } catch (Exception e) {
-            expiration = null;
-        }
-        return expiration;
-    }
-
     private Claims getClaimsFromToken(String token) {
         Claims claims;
         try {
@@ -93,10 +62,6 @@ public class JwtManager implements Serializable {
         return new Date(System.currentTimeMillis() + expiration * 1000);
     }
 
-    private Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
-    }
 
     public String buildToken(Map<String, Object> claims) {
         ObjectMapper mapper = new ObjectMapper();
@@ -108,21 +73,4 @@ public class JwtManager implements Serializable {
                 .compact();
     }
 
-    public String refreshToken(String token) {
-        String refreshedToken;
-        try {
-            final Claims claims = getClaimsFromToken(token);
-            claims.put(CLAIM_KEY_CREATED, new Date());
-            refreshedToken = buildToken(claims);
-        } catch (Exception e) {
-            refreshedToken = null;
-        }
-        return refreshedToken;
-    }
-
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        JwtUser user = (JwtUser) userDetails;
-        final String email = getEmailFromToken(token);
-        return email.equals(user.getUsername()) && !isTokenExpired(token);
-    }
 }

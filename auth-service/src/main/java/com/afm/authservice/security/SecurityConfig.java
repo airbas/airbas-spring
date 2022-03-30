@@ -2,7 +2,6 @@ package com.afm.authservice.security;
 
 import com.afm.authservice.service.SpringUserService;
 import lombok.RequiredArgsConstructor;
-import model.auth.ERole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -73,24 +72,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
     }
 }
-/**
-    @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/auth/signup", "/auth/login","/auth/users/**").hasAnyRole(ERole.USER.name())
-                .antMatchers("/profile/**").hasAnyRole(ERole.USER.name())
-               .antMatchers("/auth/signup/admin").hasAnyRole(ERole.ADMIN.name())
-                .anyRequest().fullyAuthenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login").permitAll()
-                .and()
-                .logout()
-                .invalidateHttpSession(true)
-                .logoutSuccessUrl("/login").and().httpBasic();
 
-    }
-}
-**/

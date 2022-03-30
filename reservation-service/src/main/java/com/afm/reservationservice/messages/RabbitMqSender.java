@@ -1,6 +1,5 @@
 package com.afm.reservationservice.messages;
 
-import model.profile.UserDetailMsg;
 import model.utils.RemoveBookSeat;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;

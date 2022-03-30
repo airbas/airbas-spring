@@ -60,7 +60,7 @@ public class ReservationService {
         return reservationRepository.findByUserEmail(email);
     }
 
-    public List<Reservation> deleteReservation(String email, String codRes){
+    public List<Reservation> deleteReservation(String codRes){
         //@TODO check email
         List<Reservation> userRes = reservationRepository.findByName(codRes);
         for(Reservation res: userRes){

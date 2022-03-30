@@ -1,9 +1,7 @@
 package com.afm.reservationservice.controller;
 
-import com.afm.reservationservice.messages.RabbitMqSender;
 import com.afm.reservationservice.service.ReservationService;
 import lombok.RequiredArgsConstructor;
-import model.prenotation.Passenger;
 import model.prenotation.Reservation;
 import model.utils.ReservationRequest;
 import org.slf4j.Logger;
@@ -23,22 +21,12 @@ public class ReservationController {
     private static Logger logger = LoggerFactory.getLogger(ReservationController.class);
     private final ReservationService reservationService;
 
-
     @PostMapping("/creates")
     public List<Reservation> createReservations(@RequestBody List<ReservationRequest> requests) throws ParseException {
         List<Reservation> reservations = new LinkedList<>();
         logger.info("Creation Reservations" );
-
         for (ReservationRequest request : requests){
             reservations.add(reservationService.buildReservation(request));
-            /*Passenger p = new Passenger();
-            p.setBirthdate(request.getPassengerDate());
-            p.setFirstname(request.getPassangerName());
-            p.setSecondname(request.getPassangerSurname());
-            p.setTelephone(request.getPassangerPhone());
-
-            reservations.add(reservationService.createReservation(request.getFlightName(), request.getAirPlaneName(),
-                    request.getSeatCord(), request.getRate(), p, request.getUsermail()));*/
         }
         return reservations;
     }
@@ -56,7 +44,7 @@ public class ReservationController {
 
     @GetMapping ("/delete/{email}/{cod}")
     public List<Reservation> deleteReservations(@PathVariable String email, @PathVariable String cod){
-        return reservationService.deleteReservation(email, cod);
+        return reservationService.deleteReservation(cod);
     }
 
 }

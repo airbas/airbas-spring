@@ -25,4 +25,9 @@ public class JwtService {
         claims.put(JwtManager.CLAIM_KEY_AUTHORITIES, auth);
         return jwtManager.buildToken(claims);
     }
+
+    public Boolean validateToken(String token, String email) {
+        final String emailTokem = jwtManager.getEmailFromToken(token);
+        return email.equals(emailTokem);
+    }
 }
