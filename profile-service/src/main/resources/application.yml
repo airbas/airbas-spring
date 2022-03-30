@@ -6,6 +6,14 @@ spring:
     password: password
     url: jdbc:postgresql://localhost:5432/airbas_profile
     username: newuser
+  rabbitmq:
+    host: localhost
+    password: guest
+    port: 15672
+    username: guest
+    exchange: user.exchange
+    queue: user.queue
+    routingkey: user.routingkey
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     hibernate:

@@ -1,5 +1,6 @@
 package com.afm.reservationservice.controller;
 
+import com.afm.reservationservice.messages.RabbitMqSender;
 import com.afm.reservationservice.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import model.prenotation.Passenger;
@@ -21,6 +22,7 @@ import java.util.List;
 public class ReservationController {
     private static Logger logger = LoggerFactory.getLogger(ReservationController.class);
     private final ReservationService reservationService;
+
 
     @PostMapping("/creates")
     public List<Reservation> createReservations(@RequestBody List<ReservationRequest> requests) throws ParseException {

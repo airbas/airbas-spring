@@ -1,11 +1,13 @@
 package com.afm.reservationservice.service;
 
+import com.afm.reservationservice.messages.RabbitMqSender;
 import com.afm.reservationservice.repository.PassengerRepository;
 import com.afm.reservationservice.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import model.flights.AirPlane;
 import model.prenotation.Passenger;
 import model.prenotation.Reservation;
+import model.utils.RemoveBookSeat;
 import model.utils.ReservationRequest;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +23,7 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final PassengerRepository passengerRepository;
     private final GenerateNameService generateReservationtName;
-
+    private final RabbitMqSender rabbitMqSender;
 
     public Reservation buildReservation(ReservationRequest req) throws ParseException {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
@@ -42,7 +44,7 @@ public class ReservationService {
         reservation.setSeatCord(req.getSeatCord());
         reservation.setArrivalAirport(req.getArrivalAirport());
         reservation.setDapartureAirport(req.getDapartureAirport());
-        reservation.setDate(df.parse(req.getDateFlight()));
+        reservation.setDate(df.parse(req.getDate()));
 
         passengerRepository.save(p);
         reservation.setPassenger(p);
@@ -59,8 +61,12 @@ public class ReservationService {
     }
 
     public List<Reservation> deleteReservation(String email, String codRes){
+        //@TODO check email
         List<Reservation> userRes = reservationRepository.findByName(codRes);
         for(Reservation res: userRes){
+            RemoveBookSeat msg = rabbitMqSender.buildMsg(res.getAirPlaneName(), res.getSeatCord());
+            System.out.println(msg.toString());
+            rabbitMqSender.send(msg);
             reservationRepository.delete(res);
         }
         return userRes;

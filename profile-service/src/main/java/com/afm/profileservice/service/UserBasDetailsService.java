@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import model.profile.UserBasDetail;
 import model.exception.BadRequestException;
 import model.exception.ResourceNotFoundException;
+import model.profile.UserDetailMsg;
 import model.utils.UserPayload;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserBasDetailsService {
     private final UserBasDetailRepository userBasDetailRepository;
+
 
     public List<UserBasDetail> findAll(){
         return userBasDetailRepository.findAll();
@@ -40,6 +42,19 @@ public class UserBasDetailsService {
         userBasDetail.setSecondname(payload.getSecondname());
         userBasDetail.setTelephone(payload.getTelephone());
         userBasDetail.setEmail(payload.getEmail());
+        userBasDetailRepository.save(userBasDetail);
+        return userBasDetail;
+    }
+
+    public UserBasDetail createDetailsUserMsg(UserDetailMsg userMsg){
+        UserBasDetail userBasDetails = userBasDetailRepository.findByEmail(userMsg.getEmail());
+        if (userBasDetails != null)
+            return null;
+
+        UserBasDetail userBasDetail = new UserBasDetail();
+        userBasDetail.setFirstname(userMsg.getFirstname());
+        userBasDetail.setSecondname(userMsg.getSecondname());
+        userBasDetail.setEmail(userMsg.getEmail());
         userBasDetailRepository.save(userBasDetail);
         return userBasDetail;
     }

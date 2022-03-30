@@ -19,7 +19,7 @@ public class ReservationRequest {
     private String usermail;
     private String dapartureAirport;
     private String arrivalAirport;
-    private String dateFlight;
+    private String date;
     private String passangerName;
     private String passangerSurname;
     private String passangerPhone;

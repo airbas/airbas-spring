@@ -2,6 +2,7 @@ package com.afm.authservice.controller;
 
 
 import com.afm.authservice.service.AuthenticationService;
+import com.afm.authservice.messages.RabbitMqSender;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import model.auth.AuthProvider;
 import model.auth.ERole;
 import model.auth.UserBas;
+import model.profile.UserDetailMsg;
 import model.utils.LoginRequest;
 import model.utils.TokenDto;
 import org.apache.http.HttpEntity;
@@ -23,8 +25,6 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.api.User;
 import org.springframework.social.facebook.api.impl.FacebookTemplate;
@@ -41,6 +41,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class OauthController {
     private final AuthenticationService authenticationService;
+    private final RabbitMqSender rabbitMqSender;
     private static Logger logger = LoggerFactory.getLogger(OauthController.class);
 
     @Value("${spring.security.oauth2.client.registration.google.clientId}")
@@ -65,9 +66,14 @@ public class OauthController {
         final GoogleIdToken googleToken = GoogleIdToken.parse(verifier.getJsonFactory(), tokenGoogle.getValue());
         final GoogleIdToken.Payload payload = googleToken.getPayload();
 
+
         if(!authenticationService.exisitUser(payload.getEmail())){
             LoginRequest credentials = new LoginRequest(payload.getEmail(), pswExtUser);
             authenticationService.createUser(credentials, AuthProvider.google, ERole.ROLE_USER);
+            UserDetailMsg userDetailMsg = rabbitMqSender.buildUserDetail(payload.getEmail(),
+                    String.valueOf(payload.get("given_name")),
+                    String.valueOf(payload.get("family_name")));
+            rabbitMqSender.send(userDetailMsg);
         }
 
         logger.info("Login with google for " + payload.getEmail());
@@ -79,10 +85,19 @@ public class OauthController {
         Facebook facebook = new FacebookTemplate(tokenFacebook.getValue());
         final String [] fields = {"email", "name"};
         User user = facebook.fetchObject("me", User.class, fields);
+        String[] names = user.getName().split(" ");
 
         if(!authenticationService.exisitUser(user.getEmail())){
             LoginRequest credentials = new LoginRequest(user.getEmail(), pswExtUser);
             authenticationService.createUser(credentials, AuthProvider.facebook, ERole.ROLE_USER);
+            if(names.length > 1){
+                UserDetailMsg userDetailMsg = rabbitMqSender.buildUserDetail(user.getEmail(),
+                        names[0],
+                        names[1]);
+                rabbitMqSender.send(userDetailMsg);
+            }
+
+
         }
         logger.info("Login with facebook for " + user.getEmail());
         return authenticationService.findUser(user.getEmail());
@@ -105,10 +120,11 @@ public class OauthController {
         if(!authenticationService.exisitUser(detailUser.get("email"))){
             LoginRequest credentials = new LoginRequest(detailUser.get("email"), pswExtUser);
             authenticationService.createUser(credentials, AuthProvider.amazon, ERole.ROLE_USER);
+            UserDetailMsg userDetailMsg = rabbitMqSender.buildUserDetail(detailUser.get("email"), detailUser.get("name"), "");
+            rabbitMqSender.send(userDetailMsg);
         }
         logger.info("Login with Amazon for " + detailUser.get("email"));
         return authenticationService.findUser(detailUser.get("email"));
-
     }
 
 
