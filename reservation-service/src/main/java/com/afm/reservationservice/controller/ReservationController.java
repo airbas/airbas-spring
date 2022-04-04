@@ -34,16 +34,13 @@ public class ReservationController {
     @CrossOrigin
     @GetMapping ("/get/{email}")
     public List<Reservation> getReservations(@PathVariable String email){
+        logger.info("Get Reservation" );
         return reservationService.getReservation(email);
     }
 
-    @GetMapping ("/getall")
-    public List<Reservation> getAll(){
-        return reservationService.getAll();
-    }
-
-    @GetMapping ("/delete/{email}/{cod}")
-    public List<Reservation> deleteReservations(@PathVariable String email, @PathVariable String cod){
+    @GetMapping ("/delete/{cod}")
+    public List<Reservation> deleteReservations(@PathVariable String cod){
+        logger.info("Delete Reservation" );
         return reservationService.deleteReservation(cod);
     }
 

@@ -27,6 +27,7 @@ public class RabbitConfiguration {
         cachingConnectionFactory.setPassword(password);
         return cachingConnectionFactory;
     }
+
     @Bean
     public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();

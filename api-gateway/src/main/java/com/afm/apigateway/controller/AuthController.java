@@ -44,19 +44,18 @@ public class AuthController {
 
     @CrossOrigin
     @PostMapping("auth/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest credential, HttpServletResponse response)  {
+    public ResponseEntity<?> login(@RequestBody LoginRequest credential)  {
         UserBas currentUser = authService.authenticateUser(credential);
         String jwt = jwtService.generateJwt(currentUser);
         TokenDto tokenDto = new TokenDto();
         tokenDto.setValue(jwt);
-        return new ResponseEntity(currentUser, HttpStatus.CREATED);
+        return new ResponseEntity(tokenDto, HttpStatus.CREATED);
     }
 
     @CrossOrigin
     @PostMapping("auth/signup")
-    public ResponseEntity<?> signUp(@RequestBody UserPayload payload, HttpServletResponse response) throws Throwable {
+    public ResponseEntity<?> signUp(@RequestBody UserPayload payload) throws Throwable {
         String jwt = userCreationSaga.createUser(payload);
-        response.setHeader(tokenHeader,jwt);
         TokenDto tokenDto = new TokenDto();
         tokenDto.setValue(jwt);
         return new ResponseEntity<>(tokenDto, HttpStatus.CREATED);
@@ -64,10 +63,9 @@ public class AuthController {
 
     @CrossOrigin
     @PostMapping("oauth/google")
-    public ResponseEntity<?> loginGoogle(@RequestBody TokenDto token, HttpServletResponse response)  {
+    public ResponseEntity<?> loginGoogle(@RequestBody TokenDto token)  {
         UserBas currentUser = authService.loginGoogle(token);
         String jwt = jwtService.generateJwt(currentUser);
-        response.setHeader(tokenHeader,jwt);
         TokenDto tokenDto = new TokenDto();
         tokenDto.setValue(jwt);
         return new ResponseEntity<>(tokenDto, HttpStatus.OK);
@@ -75,10 +73,9 @@ public class AuthController {
 
     @CrossOrigin
     @PostMapping("oauth/facebook")
-    public ResponseEntity<?> loginFacebook(@RequestBody TokenDto token, HttpServletResponse response)  {
+    public ResponseEntity<?> loginFacebook(@RequestBody TokenDto token)  {
         UserBas currentUser = authService.loginFacebook(token);
         String jwt = jwtService.generateJwt(currentUser);
-        response.setHeader(tokenHeader,jwt);
         TokenDto tokenDto = new TokenDto();
         tokenDto.setValue(jwt);
         return new ResponseEntity<>(tokenDto, HttpStatus.OK);
@@ -86,10 +83,9 @@ public class AuthController {
 
     @CrossOrigin
     @PostMapping("oauth/amazon")
-    public ResponseEntity<?> loginAmazon(@RequestBody TokenDto token, HttpServletResponse response)  {
+    public ResponseEntity<?> loginAmazon(@RequestBody TokenDto token)  {
         UserBas currentUser = authService.loginAmazon(token);
         String jwt = jwtService.generateJwt(currentUser);
-        response.setHeader(tokenHeader,jwt);
         TokenDto tokenDto = new TokenDto();
         tokenDto.setValue(jwt);
         return new ResponseEntity<>(tokenDto, HttpStatus.OK);

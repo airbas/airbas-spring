@@ -34,17 +34,20 @@ public class FlightController {
         return new ResponseEntity(flightList, HttpStatus.OK);
     }
 
+    // @TODO NOT used in front-end
     @CrossOrigin
     @GetMapping("flights/cities")
     public ResponseEntity<?> getCity()  {
         return new ResponseEntity(null, HttpStatus.OK);
     }
 
+    // @TODO NOT used in front-end
+    /*
     @GetMapping("/flights/{airplaneName}")
     public ResponseEntity<?> findAirplane(@PathVariable(name = "airplaneName") String airPlaneName)  {
         AirPlane airPlane = flightService.getAirplaneRest(airPlaneName);
         return new ResponseEntity(airPlane, HttpStatus.OK);
-    }
+    }*/
 
     @GetMapping("/flights/bookSeat/{airplaneName}/{seatCord}")
     public ResponseEntity<?> getBookSeat(@PathVariable(name = "airplaneName") String airPlaneName,

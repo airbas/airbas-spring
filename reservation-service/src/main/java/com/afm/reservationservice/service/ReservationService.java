@@ -61,7 +61,6 @@ public class ReservationService {
     }
 
     public List<Reservation> deleteReservation(String codRes){
-        //@TODO check email
         List<Reservation> userRes = reservationRepository.findByName(codRes);
         for(Reservation res: userRes){
             RemoveBookSeat msg = rabbitMqSender.buildMsg(res.getAirPlaneName(), res.getSeatCord());
@@ -72,7 +71,4 @@ public class ReservationService {
         return userRes;
     }
 
-    public List<Reservation> getAll(){
-        return reservationRepository.findAll();
-    }
 }

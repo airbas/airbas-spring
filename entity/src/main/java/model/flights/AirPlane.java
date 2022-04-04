@@ -15,16 +15,11 @@ public class AirPlane {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
-
     private AirPlaneType type;
-
     private Integer availableSeats;
-
     private Integer allSeats;
-
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Map<String, Integer> seats;
 
 }

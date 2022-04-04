@@ -55,4 +55,18 @@ public class ReservationService {
     }
 
 
+    public List<Reservation> deleteReservation(String code) {
+
+        List<Reservation> resList = restTemplate.exchange(
+                resAddress + "/reservation/delete/" + code,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Reservation>>() {
+                }
+        ).getBody();
+
+        return resList;
+    }
+
+
 }

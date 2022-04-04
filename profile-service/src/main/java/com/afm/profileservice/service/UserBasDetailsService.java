@@ -17,7 +17,6 @@ import java.util.List;
 public class UserBasDetailsService {
     private final UserBasDetailRepository userBasDetailRepository;
 
-
     public List<UserBasDetail> findAll(){
         return userBasDetailRepository.findAll();
     }
@@ -64,19 +63,19 @@ public class UserBasDetailsService {
         if (userBasDetail == null)
             throw new ResourceNotFoundException("Email not exists");
 
-        if(!payload.getTelephone().isBlank()){
+        if(payload.getTelephone() != null){
             userBasDetail.setTelephone(payload.getTelephone());
         }
-        if(!payload.getCreditcard().isBlank()){
+        if(payload.getCreditcard() != null){
             userBasDetail.setCreditcard(payload.getCreditcard());
         }
         if(payload.getBirthdate() != null){
             userBasDetail.setBirthdate(payload.getBirthdate());
         }
-        if(!payload.getFirstname().isBlank()){
+        if(payload.getFirstname() != null){
             userBasDetail.setFirstname(payload.getFirstname());
         }
-        if(!payload.getSecondname().isBlank()){
+        if(payload.getSecondname() != null){
             userBasDetail.setSecondname(payload.getSecondname());
         }
         userBasDetailRepository.save(userBasDetail);

@@ -25,17 +25,6 @@ import java.util.Arrays;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final SpringUserService springUserService;
-    // @TODO to manage
-
-    /**
-     * //adding ADMIN in input
-     *
-     * @Autowired public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-     * auth.inMemoryAuthentication()
-     * .withUser("ADMIN").password(bCryptPasswordEncoder.encode("ADMIN"))
-     * .roles(ERole.ADMIN.name());
-     * }
-     **/
 
     @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -47,19 +36,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationManager getAuthenticationManager() throws Exception {
         return authenticationManager();
-    }
-
-
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("*");
-        configuration.setAllowedMethods(Arrays.asList("POST, PUT, GET, OPTIONS, DELETE"));
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 
     @Override

@@ -35,11 +35,6 @@ public class ProfileController {
         }
     }
 
-    @GetMapping("/details")
-    public List<UserBasDetail> allDetails() {
-        return profileService.allDetails();
-    }
-
     @CrossOrigin
     @PostMapping("/update")
     public ResponseEntity<?> update(@RequestBody UserPayload payload)  {
@@ -49,5 +44,10 @@ public class ProfileController {
         }
         return new ResponseEntity(updated, HttpStatus.CREATED);
 
+    }
+
+    @GetMapping("/details")
+    public List<UserBasDetail> allDetails() {
+        return profileService.allDetails();
     }
 }

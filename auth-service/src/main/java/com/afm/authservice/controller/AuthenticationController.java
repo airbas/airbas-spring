@@ -31,15 +31,10 @@ public class AuthenticationController {
         logger.info("User created : " + payload.getEmail());
         return payload;
     }
-    // @TODO to manage
-    @GetMapping("/signup/admin")
-    public UserBas signUpAdmin(){
-        return null;
-    }
 
 
     @PostMapping("/login")
-    public UserBas logIn(@RequestBody LoginRequest loginReq, HttpServletResponse response) {
+    public UserBas logIn(@RequestBody LoginRequest loginReq) {
         UserBas user = authenticationService.authenticateUser(loginReq);
         logger.info("User login : " + user.getEmail());
         return user;
@@ -59,6 +54,5 @@ public class AuthenticationController {
         authenticationService.deleteUser(user);
         return user;
     }
-
 
 }
