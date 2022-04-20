@@ -3,11 +3,9 @@ server:
 
 spring:
   datasource:
-    password: password
-    url: jdbc:postgresql://localhost:5432/airbas_profile
-    username: newuser
+    url: jdbc:postgresql://profiledb:5432/profile_db
   rabbitmq:
-    host: localhost
+    host: rabbitmq
     password: guest
     port: 15672
     username: guest

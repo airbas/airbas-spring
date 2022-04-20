@@ -10,9 +10,9 @@ server:
 
 spring:
   datasource:
-    password: password
-    url: jdbc:postgresql://localhost:5432/airbas_auth
-    username: newuser
+    #password: password
+    url: jdbc:postgresql://authdb:5432/auth_db
+    #username: newuser
 
   rabbitmq:
     host: localhost

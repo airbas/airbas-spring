@@ -55,6 +55,7 @@ public class AuthService {
     public UserBas authenticateUser(LoginRequest credentials) {
         HttpEntity<LoginRequest> credentialsHttpEntity = new HttpEntity<>(credentials);
 
+        System.out.println(authAddress);
         UserBas currentUser = restTemplate.postForObject(
                 authAddress + "/auth/login",
                 credentialsHttpEntity,

@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  flightdb:
+    container_name: fligthdbimage
+    image: "postgres"
+    ports:
+      - "5433:5432"
+    volumes:
+      - db-datafli:/var/lib/postgresql/datafli
+    environment:
+      # Init db cluster and user password of superuser
+      POSTGRES_DB: flight_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672" #JMS Port
+      - "15672:15672" #Management Port - default user:pass = guest:guest
+  app:
+    build: .
+    image: flight_service
+    container_name: flight_service
+
+    links:
+      - rabbitmq
+
+    ports:
+      - "8083:8083"
+    depends_on:
+      - flightdb
+      - rabbitmq
+    # user pass defined of respective postgres image
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://flightdb:5432/flight_db
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=admin
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_RABBITMQ_HOST=rabbitmq
+volumes:
+  db-datafli:
+

@@ -1,0 +1,182 @@
+version: '3'
+
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672" #JMS Port
+      - "15672:15672" #Management Port - default user:pass = guest:guest
+
+  flightdb:
+    container_name: fligthdbimage
+    image: "postgres"
+    ports:
+      - "5433:5432"
+    volumes:
+      - db-datafli:/var/lib/postgresql/datafli
+    environment:
+      # Init db cluster and user password of superuser
+      POSTGRES_DB: flight_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      restart: unless-stopped
+
+  authdb:
+    container_name: authdbimage
+    image: "postgres"
+    ports:
+      - "5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      # Init db cluster and user password of superuser
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      restart: unless-stopped
+
+  profiledb:
+    container_name: profdbimage
+    image: "postgres"
+    ports:
+      - "5434:5432"
+    volumes:
+      - db-datapf:/var/lib/postgresql/datapf
+    environment:
+      # Init db cluster and user password of superuser
+      POSTGRES_DB: profile_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      restart: unless-stopped
+
+  resdb:
+    container_name: resdbimage
+    image: "postgres"
+    ports:
+      - "5435:5432"
+    volumes:
+      - db-datares:/var/lib/postgresql/datares
+    environment:
+      # Init db cluster and user password of superuser
+      POSTGRES_DB: res_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      restart: unless-stopped
+
+  appflight:
+    build:
+      context: ./flights-service
+      dockerfile: Dockerfile
+    image: flight_service
+    container_name: flight_service
+
+    links:
+      - rabbitmq
+
+    ports:
+      - "8083:8083"
+    depends_on:
+      - flightdb
+      - rabbitmq
+    # user pass defined of respective postgres image
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://flightdb:5432/flight_db
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=admin
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_RABBITMQ_HOST=rabbitmq
+
+  appprofile:
+    build:
+      context: ./profile-service
+      dockerfile: Dockerfile
+    image: profile_service
+    container_name: profile_service
+
+    links:
+      - rabbitmq
+
+    ports:
+      - "8081:8081"
+    depends_on:
+      - profiledb
+      - rabbitmq
+    # user pass defined of respective postgres image
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://profiledb:5432/profile_db
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=admin
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_RABBITMQ_HOST=rabbitmq
+
+  appauth:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    image: auth_service
+    container_name: auth_service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - authdb
+    # user pass defined of respective postgres image
+    links:
+      - rabbitmq
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://authdb:5432/auth_db
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=admin
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+
+  appres:
+    build:
+      context: ./reservation-service
+      dockerfile: Dockerfile
+    image: reservation-service
+    container_name: reservation-service
+
+    links:
+      - rabbitmq
+
+    ports:
+      - "8084:8084"
+    depends_on:
+      - resdb
+      - rabbitmq
+    # user pass defined of respective postgres image
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://resdb:5432/res_db
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=admin
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_RABBITMQ_HOST=rabbitmq
+
+  app_gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    image: api-gateway
+    container_name: api-gateway
+
+    links:
+      - rabbitmq
+
+    ports:
+      - "8080:8080"
+    depends_on:
+      - rabbitmq
+    # user pass defined of respective postgres image
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SERVICES_AUTHENTICATION_AUTHADDRESS=http://appauth:8082
+      - SERVICES_AUTHENTICATION_PROFILEADDRESS=http://appprofile:8081
+      - SERVICES_FLIGHTS_FLIGHTSADDRESS=http://appflight:8083
+      - SERVICES_FLIGHTS_RESADDRESS=http://appres:8084
+
+
+volumes:
+  db-datafli:
+  db-data:
+  db-datapf:
+  db-datares:
