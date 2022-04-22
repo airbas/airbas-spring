@@ -70,6 +70,7 @@ public class OauthController {
         if(!authenticationService.exisitUser(payload.getEmail())){
             LoginRequest credentials = new LoginRequest(payload.getEmail(), pswExtUser);
             authenticationService.createUser(credentials, AuthProvider.google, ERole.ROLE_USER);
+
             UserDetailMsg userDetailMsg = rabbitMqSender.buildUserDetail(payload.getEmail(),
                     String.valueOf(payload.get("given_name")),
                     String.valueOf(payload.get("family_name")));

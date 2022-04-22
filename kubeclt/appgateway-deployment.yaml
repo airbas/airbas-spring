@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.26.1 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: appgateway
+  name: appgateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: appgateway
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.26.1 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/network: "true"
+        io.kompose.service: appgateway
+    spec:
+      containers:
+        - env:
+            - name: SERVICES_AUTHENTICATION_AUTHADDRESS
+              value: http://appauth:8082
+            - name: SERVICES_AUTHENTICATION_PROFILEADDRESS
+              value: http://appprofile:8081
+            - name: SERVICES_FLIGHTS_FLIGHTSADDRESS
+              value: http://appflight:8083
+            - name: SERVICES_FLIGHTS_RESADDRESS
+              value: http://appres:8084
+            - name: SPRING_RABBITMQ_HOST
+              value: rabbitmq
+          image: ffiodicedev/air_gateway
+          name: api-gateway
+          ports:
+            - containerPort: 8080
+          resources: {}
+      restartPolicy: Always
+status: {}

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.26.1 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: appauth
+  name: appauth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: appauth
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.26.1 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/network: "true"
+        io.kompose.service: appauth
+    spec:
+      containers:
+        - env:
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: admin
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://authdb:5432/auth_db
+            - name: SPRING_DATASOURCE_USERNAME
+              value: admin
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: update
+          image: ffiodicedev/air_auth
+          name: auth-service
+          ports:
+            - containerPort: 8082
+          resources: {}
+      restartPolicy: Always
+status: {}

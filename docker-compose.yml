@@ -6,6 +6,8 @@ services:
     ports:
       - "5672:5672" #JMS Port
       - "15672:15672" #Management Port - default user:pass = guest:guest
+    networks:
+      - network
 
   flightdb:
     container_name: fligthdbimage
@@ -20,6 +22,8 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       restart: unless-stopped
+    networks:
+      - network
 
   authdb:
     container_name: authdbimage
@@ -34,6 +38,8 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       restart: unless-stopped
+    networks:
+      - network
 
   profiledb:
     container_name: profdbimage
@@ -48,6 +54,8 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       restart: unless-stopped
+    networks:
+      - network
 
   resdb:
     container_name: resdbimage
@@ -62,17 +70,17 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       restart: unless-stopped
+    networks:
+      - network
 
   appflight:
     build:
       context: ./flights-service
       dockerfile: Dockerfile
-    image: flight_service
+    image: ffiodicedev/air_flights
     container_name: flight_service
-
     links:
       - rabbitmq
-
     ports:
       - "8083:8083"
     depends_on:
@@ -85,17 +93,17 @@ services:
       - SPRING_DATASOURCE_PASSWORD=admin
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_RABBITMQ_HOST=rabbitmq
+    networks:
+      - network
 
   appprofile:
     build:
       context: ./profile-service
       dockerfile: Dockerfile
-    image: profile_service
+    image: ffiodicedev/air_profile
     container_name: profile_service
-
     links:
       - rabbitmq
-
     ports:
       - "8081:8081"
     depends_on:
@@ -108,17 +116,20 @@ services:
       - SPRING_DATASOURCE_PASSWORD=admin
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_RABBITMQ_HOST=rabbitmq
+    networks:
+      - network
 
   appauth:
     build:
       context: ./auth-service
       dockerfile: Dockerfile
-    image: auth_service
+    image: ffiodicedev/air_auth
     container_name: auth_service
     ports:
       - "8082:8082"
     depends_on:
       - authdb
+      - rabbitmq
     # user pass defined of respective postgres image
     links:
       - rabbitmq
@@ -127,13 +138,14 @@ services:
       - SPRING_DATASOURCE_USERNAME=admin
       - SPRING_DATASOURCE_PASSWORD=admin
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-
+    networks:
+      - network
 
   appres:
     build:
       context: ./reservation-service
       dockerfile: Dockerfile
-    image: reservation-service
+    image: ffiodicedev/air_res
     container_name: reservation-service
 
     links:
@@ -151,12 +163,14 @@ services:
       - SPRING_DATASOURCE_PASSWORD=admin
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_RABBITMQ_HOST=rabbitmq
+    networks:
+      - network
 
-  app_gateway:
+  appgateway:
     build:
       context: ./api-gateway
       dockerfile: Dockerfile
-    image: api-gateway
+    image: ffiodicedev/air_gateway
     container_name: api-gateway
 
     links:
@@ -166,6 +180,10 @@ services:
       - "8080:8080"
     depends_on:
       - rabbitmq
+      - appauth
+      - appflight
+      - appprofile
+      - appres
     # user pass defined of respective postgres image
     environment:
       - SPRING_RABBITMQ_HOST=rabbitmq
@@ -173,10 +191,14 @@ services:
       - SERVICES_AUTHENTICATION_PROFILEADDRESS=http://appprofile:8081
       - SERVICES_FLIGHTS_FLIGHTSADDRESS=http://appflight:8083
       - SERVICES_FLIGHTS_RESADDRESS=http://appres:8084
-
+    networks:
+      - network
 
 volumes:
   db-datafli:
   db-data:
   db-datapf:
   db-datares:
+
+networks:
+  network:

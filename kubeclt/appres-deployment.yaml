@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.26.1 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: appres
+  name: appres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: appres
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.26.1 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/network: "true"
+        io.kompose.service: appres
+    spec:
+      containers:
+        - env:
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: admin
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://resdb:5432/res_db
+            - name: SPRING_DATASOURCE_USERNAME
+              value: admin
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: update
+            - name: SPRING_RABBITMQ_HOST
+              value: rabbitmq
+          image: ffiodicedev/air_res
+          name: reservation-service
+          ports:
+            - containerPort: 8084
+          resources: {}
+      restartPolicy: Always
+status: {}
