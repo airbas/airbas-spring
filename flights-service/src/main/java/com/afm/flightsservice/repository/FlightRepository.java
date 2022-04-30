@@ -9,8 +9,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface FlightRepository extends JpaRepository<Flight, Long> {
-
-
     @Query(value="SELECT * FROM Flight f WHERE f.departure_date <= :departureDate", nativeQuery = true)
     List<Flight> findByDepartureDate(@Param("departureDate")Date departureDate);
 

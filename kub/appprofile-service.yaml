@@ -15,5 +15,6 @@ spec:
       targetPort: 8081
   selector:
     io.kompose.service: appprofile
+
 status:
   loadBalancer: {}

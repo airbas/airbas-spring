@@ -15,8 +15,6 @@ public class FlightsServiceApplication {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
-
-
     public static void main(String[] args) {
         SpringApplication.run(FlightsServiceApplication.class, args);
     }

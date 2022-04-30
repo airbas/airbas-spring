@@ -15,5 +15,6 @@ spec:
       targetPort: 8083
   selector:
     io.kompose.service: appflight
+
 status:
   loadBalancer: {}

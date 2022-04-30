@@ -98,7 +98,6 @@ public class OauthController {
                 rabbitMqSender.send(userDetailMsg);
             }
 
-
         }
         logger.info("Login with facebook for " + user.getEmail());
         return authenticationService.findUser(user.getEmail());
