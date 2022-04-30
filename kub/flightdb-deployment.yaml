@@ -1,10 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert -f docker-compose.yml
-    kompose.version: 1.26.1 (HEAD)
-  creationTimestamp: null
   labels:
     io.kompose.service: flightdb
   name: flightdb
@@ -17,12 +13,7 @@ spec:
     type: Recreate
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert -f docker-compose.yml
-        kompose.version: 1.26.1 (HEAD)
-      creationTimestamp: null
       labels:
-        io.kompose.network/network: "true"
         io.kompose.service: flightdb
     spec:
       containers:
@@ -39,7 +30,6 @@ spec:
           name: fligthdbimage
           ports:
             - containerPort: 5432
-          resources: {}
           volumeMounts:
             - mountPath: /var/lib/postgresql/datafli
               name: db-datafli
@@ -48,4 +38,31 @@ spec:
         - name: db-datafli
           persistentVolumeClaim:
             claimName: db-datafli
-status: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: db-datafli
+  name: db-datafli
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: flightdb
+  name: flightdb
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    io.kompose.service: flightdb
+  type: ClusterIP

@@ -1,10 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert -f docker-compose.yml
-    kompose.version: 1.26.1 (HEAD)
-  creationTimestamp: null
   labels:
     io.kompose.service: appflight
   name: appflight
@@ -13,15 +9,9 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: appflight
-  strategy: {}
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert -f docker-compose.yml
-        kompose.version: 1.26.1 (HEAD)
-      creationTimestamp: null
       labels:
-        io.kompose.network/network: "true"
         io.kompose.service: appflight
     spec:
       containers:
@@ -40,6 +30,17 @@ spec:
           name: flight-service
           ports:
             - containerPort: 8083
-          resources: {}
       restartPolicy: Always
-status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: appflight
+  name: appflight
+spec:
+  ports:
+    - port: 8083
+      targetPort: 8083
+  selector:
+    io.kompose.service: appflight

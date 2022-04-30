@@ -1,10 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert -f docker-compose.yml
-    kompose.version: 1.26.1 (HEAD)
-  creationTimestamp: null
   labels:
     io.kompose.service: resdb
   name: resdb
@@ -18,11 +14,7 @@ spec:
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose convert -f docker-compose.yml
-        kompose.version: 1.26.1 (HEAD)
-      creationTimestamp: null
       labels:
-        io.kompose.network/network: "true"
         io.kompose.service: resdb
     spec:
       containers:
@@ -39,7 +31,6 @@ spec:
           name: resdbimage
           ports:
             - containerPort: 5432
-          resources: {}
           volumeMounts:
             - mountPath: /var/lib/postgresql/datares
               name: db-datares
@@ -48,4 +39,30 @@ spec:
         - name: db-datares
           persistentVolumeClaim:
             claimName: db-datares
-status: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    io.kompose.service: db-datares
+  name: db-datares
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: resdb
+  name: resdb
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    io.kompose.service: resdb
+

@@ -1,9 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert -f docker-compose.yml
-    kompose.version: 1.26.1 (HEAD)
   labels:
     io.kompose.service: profiledb
   name: profiledb
@@ -17,11 +14,7 @@ spec:
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose convert -f docker-compose.yml
-        kompose.version: 1.26.1 (HEAD)
-      creationTimestamp: null
       labels:
-        io.kompose.network/network: "true"
         io.kompose.service: profiledb
     spec:
       containers:
@@ -38,7 +31,6 @@ spec:
           name: profdbimage
           ports:
             - containerPort: 5432
-          resources: {}
           volumeMounts:
             - mountPath: /var/lib/postgresql/datapf
               name: db-datapf
@@ -47,3 +39,30 @@ spec:
         - name: db-datapf
           persistentVolumeClaim:
             claimName: db-datapf
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    io.kompose.service: db-datapf
+  name: db-datapf
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: profiledb
+  name: profiledb
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    io.kompose.service: profiledb
+  type: ClusterIP

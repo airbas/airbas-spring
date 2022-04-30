@@ -1,9 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert -f docker-compose.yml
-    kompose.version: 1.26.1 (HEAD)
   labels:
     io.kompose.service: appprofile
   name: appprofile
@@ -12,14 +9,9 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: appprofile
-  strategy: {}
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert -f docker-compose.yml
-        kompose.version: 1.26.1 (HEAD)
       labels:
-        io.kompose.network/network: "true"
         io.kompose.service: appprofile
     spec:
       containers:
@@ -38,5 +30,18 @@ spec:
           name: profile-service
           ports:
             - containerPort: 8081
-          resources: {}
       restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: appprofile
+  name: appprofile
+spec:
+  ports:
+    - port: 8081
+      targetPort: 8081
+  selector:
+    io.kompose.service: appprofile
+  type: ClusterIP

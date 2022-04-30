@@ -1,9 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert -f docker-compose.yml
-    kompose.version: 1.26.1 (HEAD)
   labels:
     io.kompose.service: appauth
   name: appauth
@@ -12,14 +9,9 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: appauth
-  strategy: {}
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert -f docker-compose.yml
-        kompose.version: 1.26.1 (HEAD)
       labels:
-        io.kompose.network/network: "true"
         io.kompose.service: appauth
     spec:
       containers:
@@ -36,5 +28,18 @@ spec:
           name: auth-service
           ports:
             - containerPort: 8082
-          resources: {}
       restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: appauth
+  name: appauth
+spec:
+  ports:
+    - port: 8082
+      targetPort: 8082
+  selector:
+    io.kompose.service: appauth
+  type: ClusterIP

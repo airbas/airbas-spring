@@ -1,10 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert -f docker-compose.yml
-    kompose.version: 1.26.1 (HEAD)
-  creationTimestamp: null
   labels:
     io.kompose.service: appgateway
   name: appgateway
@@ -16,12 +12,7 @@ spec:
   strategy: {}
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert -f docker-compose.yml
-        kompose.version: 1.26.1 (HEAD)
-      creationTimestamp: null
       labels:
-        io.kompose.network/network: "true"
         io.kompose.service: appgateway
     spec:
       containers:
@@ -40,6 +31,18 @@ spec:
           name: api-gateway
           ports:
             - containerPort: 8080
-          resources: {}
       restartPolicy: Always
-status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: appgateway
+  name: appgateway
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    io.kompose.service: appgateway
+  type: ClusterIP
