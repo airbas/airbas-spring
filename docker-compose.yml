@@ -191,6 +191,7 @@ services:
       - SERVICES_AUTHENTICATION_PROFILEADDRESS=http://appprofile:8081
       - SERVICES_FLIGHTS_FLIGHTSADDRESS=http://appflight:8083
       - SERVICES_FLIGHTS_RESADDRESS=http://appres:8084
+      - SERVICES_FLIGHTS_FLIGHTSGENADDRESS=http://flightgen:5000
     networks:
       - network
 

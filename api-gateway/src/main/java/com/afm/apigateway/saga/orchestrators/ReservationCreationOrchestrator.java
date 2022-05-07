@@ -23,6 +23,7 @@ public class ReservationCreationOrchestrator extends Orchestrator {
 
         return builder
                 .invoke(reservationService::createReservationsGet).addParam("request").saveTo("reservationCreated")
+                .withCompensation(reservationService::deleteReservation)
 
                 .step()
                 .invoke(flightsService::bookSeatRestMult).addParam("reservationCreated")

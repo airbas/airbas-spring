@@ -25,6 +25,8 @@ spec:
               value: http://appflight:8083
             - name: SERVICES_FLIGHTS_RESADDRESS
               value: http://appres:8084
+            - name: SERVICES_FLIGHTS_FLIGHTSGENADDRESS
+              value: http://flightgen:5000
             - name: SPRING_RABBITMQ_HOST
               value: rabbitmq
           image: ffiodicedev/air_gateway

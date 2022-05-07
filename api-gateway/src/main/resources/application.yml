@@ -23,6 +23,7 @@ services:
   flights:
     flightsAddress : http://localhost:8083
     resAddress : http://localhost:8084
+    flightsGenAddress : http://localhost:5000
 
 server:
   port: 8080

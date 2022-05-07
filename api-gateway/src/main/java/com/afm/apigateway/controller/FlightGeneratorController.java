@@ -7,6 +7,7 @@ import model.flights.AirPlane;
 import model.flights.Flight;
 import model.utils.RequestAddFlight;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,11 +26,15 @@ public class FlightGeneratorController {
     public final RestTemplate restTemplate;
     private final FlightsService flightService;
 
-    @GetMapping("/add")
+    @Value("${services.flights.flightsGenAddress}")
+    private String flightAddress;
+
+    @GetMapping("add")
     public List<Flight> addFlight(){
+        System.out.println(flightAddress + "/generate");
 
         List<RequestAddFlight> flights = restTemplate.exchange(
-                "http://127.0.0.1:5000/generate",
+                flightAddress + "/generate",
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<RequestAddFlight>>() {}

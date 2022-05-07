@@ -97,7 +97,6 @@ public class OauthController {
                         names[1]);
                 rabbitMqSender.send(userDetailMsg);
             }
-
         }
         logger.info("Login with facebook for " + user.getEmail());
         return authenticationService.findUser(user.getEmail());
@@ -126,8 +125,5 @@ public class OauthController {
         logger.info("Login with Amazon for " + detailUser.get("email"));
         return authenticationService.findUser(detailUser.get("email"));
     }
-
-
-
 
 }

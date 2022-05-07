@@ -69,4 +69,8 @@ public class ReservationService {
     }
 
 
+
+
+    public void deleteReservation(List<Reservation> reservations) {
+    }
 }
