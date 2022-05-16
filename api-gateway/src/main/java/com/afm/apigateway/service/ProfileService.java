@@ -55,11 +55,31 @@ public class ProfileService {
         ).getBody();
     }
 
+    public void deleteProfile(String email) {
+        restTemplate.exchange(
+                profileAddress + String.format("/profile/details/%s", email),
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<UserBasDetail>() {
+                }
+        ).getBody();
+    }
+
     public UserBasDetail update(UserPayload payload) {
         return restTemplate.postForObject(
                     profileAddress + "/profile/update",
                     payload,
                     UserBasDetail.class);
 
+    }
+
+    public void deleteProfile(UserPayload userPayload) {
+        restTemplate.exchange(
+                profileAddress + String.format("/profile/delete/%s", userPayload.getEmail()),
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<UserBasDetail>() {
+                }
+        );
     }
 }

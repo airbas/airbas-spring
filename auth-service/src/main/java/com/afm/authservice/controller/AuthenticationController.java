@@ -47,7 +47,6 @@ public class AuthenticationController {
     }
 
 
-    // @TODO to manage
     @GetMapping("/users/delete/{email}")
     public UserBas deleteUser(@PathVariable String email){
         UserBas user = authenticationService.findUser(email);

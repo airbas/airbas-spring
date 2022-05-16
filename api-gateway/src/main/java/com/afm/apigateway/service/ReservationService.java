@@ -69,8 +69,10 @@ public class ReservationService {
     }
 
 
-
-
     public void deleteReservation(List<Reservation> reservations) {
+        for(Reservation res : reservations){
+            this.deleteReservation(res.getName());
+        }
+
     }
 }

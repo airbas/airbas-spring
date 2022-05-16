@@ -35,6 +35,12 @@ public class UserBasDetailController {
         return userBasDetailsService.updateDetailsUser(payload);
     }
 
+    @GetMapping("/delete/{email}")
+    public UserBasDetail delete(@PathVariable String email)  {
+        return userBasDetailsService.findDetails(email);
+    }
+
+
 
 
 }

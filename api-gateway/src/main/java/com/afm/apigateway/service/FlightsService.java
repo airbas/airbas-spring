@@ -56,7 +56,8 @@ public class FlightsService {
 
         return flightsList;
     }
-    /*
+
+    // Not used (for now)
     public AirPlane getAirplaneRest(@RequestBody String name) {
 
         AirPlane airplane = restTemplate.getForObject(
@@ -65,7 +66,7 @@ public class FlightsService {
         );
 
         return airplane;
-    }*/
+    }
 
     public AirPlane bookSeatRest(String airPlaneName, String seatCord) {
 
@@ -94,7 +95,6 @@ public class FlightsService {
 
     public AirPlane removeBookSeatRest(String airPlaneName, String seatCord) {
 
-        System.out.println();
         AirPlane airplane = restTemplate.getForObject(
                 flightAddress + "/flights/removeBookSeat?name=" + airPlaneName + "&seatCord=" + seatCord ,
                 AirPlane.class

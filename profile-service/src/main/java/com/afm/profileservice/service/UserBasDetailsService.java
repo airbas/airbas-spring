@@ -82,4 +82,10 @@ public class UserBasDetailsService {
         return userBasDetail;
     }
 
+    public UserBasDetail deleteProfile(String mail){
+        UserBasDetail userBasDetail = userBasDetailRepository.findByEmail(mail);
+        userBasDetailRepository.delete(userBasDetail);
+        return userBasDetail;
+    }
+
 }

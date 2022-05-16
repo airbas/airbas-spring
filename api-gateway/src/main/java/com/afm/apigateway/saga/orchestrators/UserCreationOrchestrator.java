@@ -31,6 +31,7 @@ public class UserCreationOrchestrator extends Orchestrator {
                 .step()
 
                 .invoke(profileService::saveDetails).addParam("userDatailsData")
+                .withCompensation(profileService::deleteProfile)
                 .step()
 
                 .invoke(authService::authenticateUserSaga).addParam("credentials").saveTo("currentUser")

@@ -23,9 +23,6 @@ public class AuthController {
     private final JwtService jwtService;
     private UserCreationOrchestrator userCreationSaga;
 
-    @Value("${jwt.header}")
-    private String tokenHeader;
-
     public AuthController(AuthService authService,
                           JwtService jwtService,
                           ProfileService profileService) {
