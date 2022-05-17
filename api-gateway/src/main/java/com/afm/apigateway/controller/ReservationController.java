@@ -41,27 +41,33 @@ public class ReservationController {
     @CrossOrigin
     @GetMapping("res/get/{email}")
     public ResponseEntity<?> getReservation(@PathVariable String email, @RequestHeader HttpHeaders headers) {
-        String jwt = headers.get("authorization").get(0);
-        if(jwtService.validateToken(jwt, email)){
-            List<Reservation> userReservations = reservationService.getReservation(email);
-            return new ResponseEntity(userReservations, HttpStatus.CREATED);
-        } else{
-            return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
+        if(headers.get("authorization").get(0) != null){
+            String jwt = headers.get("authorization").get(0);
+            if(jwtService.validateToken(jwt, email)){
+                List<Reservation> userReservations = reservationService.getReservation(email);
+                return new ResponseEntity(userReservations, HttpStatus.CREATED);
+            } else{
+                return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
+            }
         }
+        return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
     }
 
     @CrossOrigin
     @GetMapping("res/delete/{email}/{cod}")
     public ResponseEntity<?> deleteReservation(@PathVariable String email, @PathVariable String cod, @RequestHeader HttpHeaders headers) {
-        String jwt = headers.get("authorization").get(0);
-        if(jwtService.validateToken(jwt, email)){
-            List<Reservation> userReservations = reservationService.deleteReservation(cod);
-            return new ResponseEntity(userReservations, HttpStatus.CREATED);
+        if(headers.get("authorization").get(0) != null){
+            String jwt = headers.get("authorization").get(0);
+            if(jwtService.validateToken(jwt, email)){
+                List<Reservation> userReservations = reservationService.deleteReservation(cod);
+                return new ResponseEntity(userReservations, HttpStatus.CREATED);
 
-        } else{
-            return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
+            } else{
+                return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
 
+            }
         }
+        return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
     }
 
 }

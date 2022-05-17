@@ -31,7 +31,7 @@ public class FlightController {
         return flightService.getAll();
     }
 
-    // @DUBUG
+    // @Next Release
     @PostMapping("/offers")
     public List<Flight> findByDepartureCity(@RequestBody RequestFlight request){
         return flightService.findByDepartureCity(request.getDepartureCity());

@@ -1,13 +1,10 @@
 package com.afm.authservice.service;
 
-import model.auth.ERole;
 import model.auth.UserBas;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Collections;
 
 public class UserBasDetails implements UserDetails {
 

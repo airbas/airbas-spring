@@ -23,7 +23,7 @@ public class UserCreationOrchestrator extends Orchestrator {
 
     @Override
     protected SagaDefinition buildSaga(SagaBuilder builder) {
-        logger.info("Building user creation saga");
+        logger.info("SAGA - User Registration");
 
         return builder
                 .invoke(authService::createUser).addParam("credentials").saveTo("userDatailsData")
